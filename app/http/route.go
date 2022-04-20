@@ -1,12 +1,13 @@
 package http
 
 import (
-    "github.com/choi006/bbsgo/app/http/module/demo"
-    "github.com/gohade/hade/framework/contract"
-    "github.com/gohade/hade/framework/gin"
-    ginSwagger "github.com/gohade/hade/framework/middleware/gin-swagger"
-    "github.com/gohade/hade/framework/middleware/gin-swagger/swaggerFiles"
-    "github.com/gohade/hade/framework/middleware/static"
+	"github.com/choi006/bbsgo/app/http/module/demo"
+	"github.com/choi006/bbsgo/app/http/module/user"
+	"github.com/gohade/hade/framework/contract"
+	"github.com/gohade/hade/framework/gin"
+	ginSwagger "github.com/gohade/hade/framework/middleware/gin-swagger"
+	"github.com/gohade/hade/framework/middleware/gin-swagger/swaggerFiles"
+	"github.com/gohade/hade/framework/middleware/static"
 )
 
 // Routes 绑定业务层路由
@@ -24,4 +25,7 @@ func Routes(r *gin.Engine) {
 
 	// 动态路由定义
 	demo.Register(r)
+
+	// 用户模块
+	user.RegisterRoutes(r)
 }

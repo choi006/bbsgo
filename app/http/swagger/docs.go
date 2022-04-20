@@ -19,8 +19,8 @@ var doc = `{
         "title": "{{.Title}}",
         "termsOfService": "https://github.com/swaggo/swag",
         "contact": {
-            "name": "yejianfeng1",
-            "email": "yejianfeng"
+            "name": "choi",
+            "email": "choi"
         },
         "license": {
             "name": "Apache 2.0",
@@ -79,6 +79,40 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/user/register": {
+            "post": {
+                "description": "用户注册接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册参数",
+                        "name": "registerParam",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.registerParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -89,6 +123,25 @@ var doc = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.registerParam": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -120,12 +173,12 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "1.1",
+	Version:     "1.0",
 	Host:        "",
 	BasePath:    "/",
 	Schemes:     []string{},
-	Title:       "hade",
-	Description: "hade测试",
+	Title:       "zhihu",
+	Description: "zhihu测试",
 }
 
 type s struct{}

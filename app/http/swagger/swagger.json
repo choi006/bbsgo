@@ -1,18 +1,18 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "hade测试",
-        "title": "hade",
+        "description": "zhihu测试",
+        "title": "zhihu",
         "termsOfService": "https://github.com/swaggo/swag",
         "contact": {
-            "name": "yejianfeng1",
-            "email": "yejianfeng"
+            "name": "choi",
+            "email": "choi"
         },
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "1.1"
+        "version": "1.0"
     },
     "basePath": "/",
     "paths": {
@@ -64,6 +64,40 @@
                     }
                 }
             }
+        },
+        "/user/register": {
+            "post": {
+                "description": "用户注册接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "注册参数",
+                        "name": "registerParam",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.registerParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -74,6 +108,25 @@
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.registerParam": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

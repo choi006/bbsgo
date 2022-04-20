@@ -7,17 +7,30 @@ definitions:
       name:
         type: string
     type: object
+  user.registerParam:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
 info:
   contact:
-    email: yejianfeng
-    name: yejianfeng1
-  description: hade测试
+    email: choi
+    name: choi
+  description: zhihu测试
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: https://github.com/swaggo/swag
-  title: hade
-  version: "1.1"
+  title: zhihu
+  version: "1.0"
 paths:
   /demo/demo:
     get:
@@ -51,6 +64,28 @@ paths:
       summary: 获取所有学生
       tags:
       - demo
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册接口
+      parameters:
+      - description: 注册参数
+        in: body
+        name: registerParam
+        required: true
+        schema:
+          $ref: '#/definitions/user.registerParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功
+          schema:
+            type: string
+      summary: 用户注册
+      tags:
+      - user
 securityDefinitions:
   ApiKeyAuth:
     in: header
