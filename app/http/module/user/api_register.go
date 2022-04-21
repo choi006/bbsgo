@@ -58,6 +58,11 @@ func (api *UserApi) Register(c *gin.Context) {
 
 	fmt.Println("userWithToken:", userWithToken)
 
+	if err := userService.SendRegisterMail(c, userWithToken); err != nil {
+		c.ISetStatus(500).IText("发送电子邮件失败")
+		return
+	}
+
 	c.ISetOkStatus().IText("注册成功，请前往邮箱查看邮件")
 	return
 }
