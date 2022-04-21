@@ -7,6 +7,16 @@ definitions:
       name:
         type: string
     type: object
+  user.loginParam:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
   user.registerParam:
     properties:
       email:
@@ -64,6 +74,28 @@ paths:
       summary: 获取所有学生
       tags:
       - demo
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: login with param
+        in: body
+        name: loginParam
+        required: true
+        schema:
+          $ref: '#/definitions/user.loginParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+      summary: 用户登录
+      tags:
+      - user
   /user/register:
     post:
       consumes:

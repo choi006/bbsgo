@@ -19,6 +19,8 @@ type Service interface {
 	SendRegisterMail(ctx context.Context, user *User) error
 	// VerifyRegister 注册用户，验证注册信息, 返回验证是否成功
 	VerifyRegister(ctx context.Context, token string) (bool, error)
+	// Login 登录相关，使用用户名密码登录，获取完成User信息
+	Login(ctx context.Context, user *User) (*User, error)
 }
 
 // User 代表一个用户，注意这里的用户信息字段在不同接口和参数可能为空

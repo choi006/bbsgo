@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/choi006/bbsgo/app/provider/user"
+	provider "github.com/choi006/bbsgo/app/provider/user"
 	"github.com/gohade/hade/framework/gin"
 )
 
@@ -22,7 +22,7 @@ func (api *UserApi) Verify(c *gin.Context) {
 		return
 	}
 
-	userService := c.MustMake(user.UserKey).(user.Service)
+	userService := c.MustMake(provider.UserKey).(provider.Service)
 	verified, err := userService.VerifyRegister(c, token)
 	if err != nil {
 		c.ISetStatus(500).IText(err.Error())

@@ -19,6 +19,38 @@ type UserService struct {
 	configer  contract.Config
 }
 
+func (u *UserService) Login(ctx context.Context, user *User) (*User, error) {
+	ormService := u.container.MustMake(contract.ORMKey).(contract.ORMService)
+	db, err := ormService.GetDB()
+	if err != nil {
+		return nil, err
+	}
+
+	userDB := &User{}
+	if err := db.Where("username=?", user.UserName).First(userDB).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(userDB.Password), []byte(user.Password)); err != nil {
+		return nil, err
+	}
+
+	userDB.Password = ""
+	// 缓存session
+	cacheService := u.container.MustMake(contract.CacheKey).(contract.CacheService)
+	token := genToken(10)
+	key := fmt.Sprintf("session:%v", token)
+	if err := cacheService.SetObj(ctx, key, userDB, 24*time.Hour); err != nil {
+		return nil, err
+	}
+
+	userDB.Token = token
+	return userDB, nil
+}
+
 func (u *UserService) VerifyRegister(ctx context.Context, token string) (bool, error) {
 	// 验证token
 	cacheService := u.container.MustMake(contract.CacheKey).(contract.CacheService)
