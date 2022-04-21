@@ -86,6 +86,27 @@ paths:
       summary: 用户注册
       tags:
       - user
+  /user/register/verify:
+    get:
+      consumes:
+      - application/json
+      description: 使用token验证注册信息
+      parameters:
+      - description: 注册token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 注册成功,请进入登录页面
+          schema:
+            type: string
+      summary: 验证注册信息
+      tags:
+      - user
 securityDefinitions:
   ApiKeyAuth:
     in: header

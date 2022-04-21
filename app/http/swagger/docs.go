@@ -113,6 +113,38 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/user/register/verify": {
+            "get": {
+                "description": "使用token验证注册信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "验证注册信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "注册token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功,请进入登录页面",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

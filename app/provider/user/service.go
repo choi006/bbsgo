@@ -6,6 +6,7 @@ import (
 	"github.com/gohade/hade/framework"
 	"github.com/gohade/hade/framework/contract"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/gomail.v2"
 	"gorm.io/gorm"
 	"math/rand"
@@ -16,6 +17,47 @@ type UserService struct {
 	container framework.Container
 	logger    contract.Log
 	configer  contract.Config
+}
+
+func (u *UserService) VerifyRegister(ctx context.Context, token string) (bool, error) {
+	// 验证token
+	cacheService := u.container.MustMake(contract.CacheKey).(contract.CacheService)
+	key := fmt.Sprintf("user:register:%v", token)
+	user := &User{}
+	if err := cacheService.GetObj(ctx, key, user); err != nil {
+		return false, err
+	}
+	if user.Token != token {
+		return false, nil
+	}
+
+	// 验证邮箱，用户名的唯一
+	ormService := u.container.MustMake(contract.ORMKey).(contract.ORMService)
+	db, err := ormService.GetDB()
+	if err != nil {
+		return false, err
+	}
+	userDB := &User{}
+	if db.Where(&User{Email: user.Email}).First(userDB).Error != gorm.ErrRecordNotFound {
+		return false, errors.New("邮箱已注册用户，不能重复注册")
+	}
+	if db.Where(&User{UserName: user.UserName}).First(userDB).Error != gorm.ErrRecordNotFound {
+		return false, errors.New("用户名已经被注册，请更换用户名")
+	}
+
+	// 验证成功将密码存储数据库之前需要加密，不能原文存储进入数据库
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.MinCost)
+	if err != nil {
+		return false, err
+	}
+	user.Password = string(hash)
+
+	// 具体在数据库创建用户
+	if err := db.Create(user).Error; err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
