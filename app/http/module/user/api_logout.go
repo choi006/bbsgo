@@ -33,6 +33,11 @@ func (api *UserApi) Logout(c *gin.Context) {
         ID:       claim.ID,
         UserName: claim.Username,
     }
+
+    if claim.StandardClaims.ExpiresAt < time.Now().Unix() {
+        c.ISetStatus(500).IText("该token已过期")
+        return
+    }
     // token剩余过期时间
     duration := claim.StandardClaims.ExpiresAt - time.Now().Unix()
 
