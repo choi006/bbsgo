@@ -17,7 +17,7 @@ type ValidateCodeGetParam struct {
 // @Tags user
 // @Param ValidateCodeGetParam body ValidateCodeGetParam true "预注册参数"
 // @Success 200 string Message "预注册成功"
-// @Router /user/preregister [post]
+// @Router /user/preregister [get]
 func (api *UserApi) PreRegister(c *gin.Context) {
 	// 验证参数
 	param := &ValidateCodeGetParam{}

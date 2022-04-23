@@ -99,8 +99,36 @@
                 }
             }
         },
+        "/user/logout": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "调用表示用户登出",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户登出",
+                "responses": {
+                    "200": {
+                        "description": "用户登出成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/preregister": {
-            "post": {
+            "get": {
                 "description": "用户预注册接口",
                 "consumes": [
                     "application/json"
