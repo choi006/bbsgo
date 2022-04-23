@@ -14,11 +14,12 @@ type Service interface {
 	// 参数：user必填，username，password, email
 	// 返回值： user 带上token
 	Register(ctx context.Context, user *User) (*User, error)
+	// IsEmailRegister 用户邮箱是否注册
+	// 参数：user必填： email
+	IsEmailRegister(ctx context.Context, email string) (bool, error)
 	// SendRegisterMail 发送注册的邮件
 	// 参数：user必填： username, password, email, token
 	SendRegisterMail(ctx context.Context, user *User) error
-	// VerifyRegister 注册用户，验证注册信息, 返回验证是否成功
-	VerifyRegister(ctx context.Context, token string) (bool, error)
 	// Login 登录相关，使用用户名密码登录，获取完成User信息
 	Login(ctx context.Context, user *User) (*User, error)
 }
@@ -30,8 +31,6 @@ type User struct {
 	Password  string    `gorm:"column:password"`
 	Email     string    `gorm:"column:email"`
 	CreatedAt time.Time `gorm:"column:created_at"`
-
-	Token string `gorm:"-"` // token 可以用作注册token或者登录token
 }
 
 // MarshalBinary 实现BinaryMarshaler 接口

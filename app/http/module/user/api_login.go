@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/choi006/bbsgo/app/http/middleware/auth"
 	provider "github.com/choi006/bbsgo/app/provider/user"
 	"github.com/gohade/hade/framework/gin"
 )
@@ -33,17 +34,23 @@ func (api *UserApi) Login(c *gin.Context) {
 		Password: param.Password,
 	}
 	userService := c.MustMake(provider.UserKey).(provider.Service)
-	userWithToken, err := userService.Login(c, model)
+	user, err := userService.Login(c, model)
 	if err != nil {
 		c.ISetStatus(500).IText(err.Error())
 		return
 	}
-	if userWithToken == nil {
+	if user == nil {
 		c.ISetStatus(500).IText("用户不存在")
 		return
 	}
 
+	token, err := auth.GenerateToken(c, user)
+	if err != nil {
+		c.ISetStatus(500).IText("生成token失败")
+		return
+	}
+
 	// 输出
-	c.ISetOkStatus().IText(userWithToken.Token)
+	c.ISetOkStatus().IText(token)
 	return
 }

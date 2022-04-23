@@ -7,6 +7,13 @@ definitions:
       name:
         type: string
     type: object
+  user.ValidateCodeGetParam:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
   user.loginParam:
     properties:
       password:
@@ -25,10 +32,13 @@ definitions:
         type: string
       username:
         type: string
+      validate_code:
+        type: string
     required:
     - email
     - password
     - username
+    - validate_code
     type: object
 info:
   contact:
@@ -96,6 +106,28 @@ paths:
       summary: 用户登录
       tags:
       - user
+  /user/preregister:
+    post:
+      consumes:
+      - application/json
+      description: 用户预注册接口
+      parameters:
+      - description: 预注册参数
+        in: body
+        name: ValidateCodeGetParam
+        required: true
+        schema:
+          $ref: '#/definitions/user.ValidateCodeGetParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 预注册成功
+          schema:
+            type: string
+      summary: 用户预注册，获取邮箱验证码
+      tags:
+      - user
   /user/register:
     post:
       consumes:
@@ -112,31 +144,10 @@ paths:
       - application/json
       responses:
         "200":
-          description: 注册成功
+          description: token
           schema:
             type: string
       summary: 用户注册
-      tags:
-      - user
-  /user/register/verify:
-    get:
-      consumes:
-      - application/json
-      description: 使用token验证注册信息
-      parameters:
-      - description: 注册token
-        in: query
-        name: token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 注册成功,请进入登录页面
-          schema:
-            type: string
-      summary: 验证注册信息
       tags:
       - user
 securityDefinitions:

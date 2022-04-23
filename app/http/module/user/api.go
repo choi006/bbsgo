@@ -19,8 +19,8 @@ func RegisterRoutes(r *gin.Engine) error {
 	r.POST("/user/login", api.Login)
 	// 注册
 	r.POST("/user/register", api.Register)
-	// 注册验证
-	r.GET("/user/register/verify", api.Verify)
+	// 预注册
+	r.POST("/user/preregister", api.PreRegister)
 
 	return nil
 }

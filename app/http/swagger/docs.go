@@ -114,6 +114,40 @@ var doc = `{
                 }
             }
         },
+        "/user/preregister": {
+            "post": {
+                "description": "用户预注册接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "用户预注册，获取邮箱验证码",
+                "parameters": [
+                    {
+                        "description": "预注册参数",
+                        "name": "ValidateCodeGetParam",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.ValidateCodeGetParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "预注册成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "用户注册接口",
@@ -140,39 +174,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "注册成功",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/register/verify": {
-            "get": {
-                "description": "使用token验证注册信息",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "验证注册信息",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "注册token",
-                        "name": "token",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "注册成功,请进入登录页面",
+                        "description": "token",
                         "schema": {
                             "type": "string"
                         }
@@ -189,6 +191,17 @@ var doc = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.ValidateCodeGetParam": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
                     "type": "string"
                 }
             }
@@ -213,7 +226,8 @@ var doc = `{
             "required": [
                 "email",
                 "password",
-                "username"
+                "username",
+                "validate_code"
             ],
             "properties": {
                 "email": {
@@ -223,6 +237,9 @@ var doc = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                },
+                "validate_code": {
                     "type": "string"
                 }
             }

@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"github.com/choi006/bbsgo/app/http/middleware/auth"
 	provider "github.com/choi006/bbsgo/app/provider/user"
 	"github.com/gohade/hade/framework/contract"
 	"github.com/gohade/hade/framework/gin"
@@ -9,9 +10,10 @@ import (
 )
 
 type registerParam struct {
-	UserName string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required,gte=6"`
-	Email    string `json:"email" binding:"required,gte=6"`
+	UserName     string `json:"username" binding:"required"`
+	Password     string `json:"password" binding:"required,gte=6"`
+	Email        string `json:"email" binding:"required,gte=6"`
+	ValidateCode string `json:"validate_code" binding:"required,gte=6"`
 }
 
 // Register godoc
@@ -21,7 +23,7 @@ type registerParam struct {
 // @Produce json
 // @Tags user
 // @Param registerParam body registerParam true "注册参数"
-// @Success 200 string Message "注册成功"
+// @Success 200 string Message "token"
 // @Router /user/register [post]
 func (api *UserApi) Register(c *gin.Context) {
 	// 验证参数
@@ -34,6 +36,15 @@ func (api *UserApi) Register(c *gin.Context) {
 		return
 	}
 
+	// 验证邮箱验证码
+	cacheService := c.MustMake(contract.CacheKey).(contract.CacheService)
+	key := fmt.Sprintf("user:register:%s", param.Email)
+	code, err := cacheService.Get(c, key)
+	if err != nil || param.ValidateCode != code {
+		c.ISetStatus(500).IText("验证码错误")
+		return
+	}
+
 	// 登录
 	model := &provider.User{
 		UserName:  param.UserName,
@@ -42,7 +53,7 @@ func (api *UserApi) Register(c *gin.Context) {
 		CreatedAt: time.Now(),
 	}
 	// 注册
-	userWithToken, err := userService.Register(c, model)
+	user, err := userService.Register(c, model)
 	if err != nil {
 		logger.Error(c, err.Error(), map[string]interface{}{
 			"stack": fmt.Sprintf("%+v", err),
@@ -50,19 +61,18 @@ func (api *UserApi) Register(c *gin.Context) {
 		c.ISetStatus(500).IText(err.Error())
 		return
 	}
-
-	if userService == nil {
+	if user == nil {
 		c.ISetStatus(500).IText("注册失败")
 		return
 	}
 
-	fmt.Println("userWithToken:", userWithToken)
-
-	if err := userService.SendRegisterMail(c, userWithToken); err != nil {
-		c.ISetStatus(500).IText("发送电子邮件失败")
+	token, err := auth.GenerateToken(c, user)
+	if err != nil {
+		c.ISetStatus(500).IText("生成token失败")
 		return
 	}
 
-	c.ISetOkStatus().IText("注册成功，请前往邮箱查看邮件")
+	// 输出
+	c.ISetOkStatus().IText(token)
 	return
 }
