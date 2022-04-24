@@ -7,6 +7,16 @@ definitions:
       name:
         type: string
     type: object
+  qa.questionCreateParam:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
   user.ValidateCodeGetParam:
     properties:
       email:
@@ -84,6 +94,53 @@ paths:
       summary: 获取所有学生
       tags:
       - demo
+  /question/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建问题
+      parameters:
+      - description: 创建问题参数
+        in: body
+        name: questionCreateParam
+        required: true
+        schema:
+          $ref: '#/definitions/qa.questionCreateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建问题
+      tags:
+      - qa
+  /question/delete:
+    get:
+      consumes:
+      - application/json
+      description: 删除问题，同时删除问题中的所有答案
+      parameters:
+      - description: 删除id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除问题
+      tags:
+      - qa
   /user/login:
     post:
       consumes:

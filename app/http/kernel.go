@@ -14,6 +14,9 @@ func NewHttpEngine(container framework.Container) (*gin.Engine, error) {
 	// 设置了Engine
 	r.SetContainer(container)
 
+	// logger中间件
+	r.Use(gin.Logger())
+
 	// 默认注册recovery中间件
 	r.Use(gin.Recovery())
 

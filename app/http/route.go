@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/choi006/bbsgo/app/http/module/demo"
+	"github.com/choi006/bbsgo/app/http/module/qa"
 	"github.com/choi006/bbsgo/app/http/module/user"
 	"github.com/gohade/hade/framework/contract"
 	"github.com/gohade/hade/framework/gin"
@@ -28,4 +29,6 @@ func Routes(r *gin.Engine) {
 
 	// 用户模块
 	user.RegisterRoutes(r)
+	// qa模块
+	qa.RegisterRoutes(r)
 }
