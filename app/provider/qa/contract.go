@@ -10,9 +10,14 @@ import (
 const QaKey = "qa"
 
 type Service interface {
+	// GetQuestion 获取某个问题详情，question简化结构
+	GetQuestion(ctx context.Context, questionID int64) (*Question, error)
 	// PostQuestion 上传某个问题
 	// ctx必须带上操作人id
 	PostQuestion(ctx context.Context, question *Question) error
+	// DeleteQuestion 删除问题，同时删除对应的回答
+	// ctx必须带操作人信息
+	DeleteQuestion(ctx context.Context, questionID int64) error
 }
 
 // Question 代表问题
