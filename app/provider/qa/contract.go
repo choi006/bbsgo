@@ -18,6 +18,9 @@ type Service interface {
 	// DeleteQuestion 删除问题，同时删除对应的回答
 	// ctx必须带操作人信息
 	DeleteQuestion(ctx context.Context, questionID int64) error
+	// UpdateQuestion 代表更新问题, 只会对比其中的context，title两个字段，其他字段不会对比
+	// ctx必须带操作人
+	UpdateQuestion(ctx context.Context, question *Question) error
 }
 
 // Question 代表问题

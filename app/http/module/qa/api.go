@@ -21,6 +21,8 @@ func RegisterRoutes(r *gin.Engine) error {
 		questionApi.POST("/create", api.QuestionCreate)
 		// 删除问题
 		questionApi.POST("/delete", api.QuestionDelete)
+		// 更新问题
+		questionApi.POST("/edit", api.QuestionEdit)
 	}
 
 	return nil
