@@ -20,6 +20,7 @@ type questionEditParam struct {
 // @Tags qa
 // @Param questionEditParam body questionEditParam true "编辑问题参数"
 // @Success 200 string Msg "操作成功"
+// @Security ApiKeyAuth
 // @Router /question/edit [post]
 func (api *QaApi) QuestionEdit(c *gin.Context) {
 	// 参数校验

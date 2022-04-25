@@ -7,7 +7,6 @@ import (
 	"github.com/gohade/hade/framework/contract"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
-	"time"
 )
 
 type QaService struct {
@@ -21,8 +20,7 @@ func (q *QaService) UpdateQuestion(ctx context.Context, question *Question) erro
 	if err := q.ormDB.WithContext(ctx).First(questionDB).Error; err != nil {
 		return errors.WithStack(err)
 	}
-
-	questionDB.UpdatedAt = time.Now()
+	
 	if question.Title != "" {
 		questionDB.Title = question.Title
 	}

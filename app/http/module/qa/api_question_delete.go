@@ -19,7 +19,7 @@ type questionDeleteParam struct {
 // @Param id query int true "删除id"
 // @Success 200 string Msg "操作成功"
 // @Security ApiKeyAuth
-// @Router /question/delete [get]
+// @Router /question/delete [post]
 func (api *QaApi) QuestionDelete(c *gin.Context) {
 	// 参数校验
 	param := &questionDeleteParam{}

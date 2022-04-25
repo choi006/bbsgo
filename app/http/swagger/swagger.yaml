@@ -17,6 +17,19 @@ definitions:
     - content
     - title
     type: object
+  qa.questionEditParam:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    required:
+    - content
+    - id
+    - title
+    type: object
   user.ValidateCodeGetParam:
     properties:
       email:
@@ -119,7 +132,7 @@ paths:
       tags:
       - qa
   /question/delete:
-    get:
+    post:
       consumes:
       - application/json
       description: 删除问题，同时删除问题中的所有答案
@@ -139,6 +152,30 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除问题
+      tags:
+      - qa
+  /question/edit:
+    post:
+      consumes:
+      - application/json
+      description: 编辑问题
+      parameters:
+      - description: 编辑问题参数
+        in: body
+        name: questionEditParam
+        required: true
+        schema:
+          $ref: '#/definitions/qa.questionEditParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 编辑问题
       tags:
       - qa
   /user/login:
