@@ -7,6 +7,23 @@ definitions:
       name:
         type: string
     type: object
+  qa.answerCreateParam:
+    properties:
+      context:
+        type: string
+      question_id:
+        type: integer
+    required:
+    - context
+    - question_id
+    type: object
+  qa.answerDeleteParam:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
   qa.questionCreateParam:
     properties:
       content:
@@ -16,6 +33,13 @@ definitions:
     required:
     - content
     - title
+    type: object
+  qa.questionDetailParam:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
     type: object
   qa.questionEditParam:
     properties:
@@ -75,6 +99,54 @@ info:
   title: zhihu
   version: "1.0"
 paths:
+  /answer/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建回答
+      parameters:
+      - description: 创建回答参数
+        in: body
+        name: answerCreateParam
+        required: true
+        schema:
+          $ref: '#/definitions/qa.answerCreateParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建回答
+      tags:
+      - qa
+  /answer/delete:
+    post:
+      consumes:
+      - application/json
+      description: 创建回答
+      parameters:
+      - description: 删除id
+        in: body
+        name: answerDeleteParam
+        required: true
+        schema:
+          $ref: '#/definitions/qa.answerDeleteParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 操作成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建回答
+      tags:
+      - qa
   /demo/demo:
     get:
       description: 获取所有用户
@@ -152,6 +224,30 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除问题
+      tags:
+      - qa
+  /question/detail:
+    post:
+      consumes:
+      - application/json
+      description: 获取问题详情，包括问题的所有回答
+      parameters:
+      - description: 问题id
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/qa.questionDetailParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 问题详情，带回答和作者
+          schema:
+            type: QuestionDTO
+      security:
+      - ApiKeyAuth: []
+      summary: 获取问题详情
       tags:
       - qa
   /question/edit:

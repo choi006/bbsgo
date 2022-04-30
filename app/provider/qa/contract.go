@@ -21,6 +21,21 @@ type Service interface {
 	// UpdateQuestion 代表更新问题, 只会对比其中的context，title两个字段，其他字段不会对比
 	// ctx必须带操作人
 	UpdateQuestion(ctx context.Context, question *Question) error
+	// QuestionLoadAuthor 问题加载Author字段
+	QuestionLoadAuthor(ctx context.Context, question *Question) error
+	// QuestionLoadAnswers 单个问题加载Answers
+	QuestionLoadAnswers(ctx context.Context, question *Question) error
+
+	// PostAnswer 上传某个回答
+	// ctx必须带操作人信息
+	PostAnswer(ctx context.Context, answer *Answer) error
+	// GetAnswer 获取回答
+	GetAnswer(ctx context.Context, answerID int64) (*Answer, error)
+	// DeleteAnswer 删除某个回答
+	// ctx必须带操作人信息
+	DeleteAnswer(ctx context.Context, answerID int64) error
+	// AnswersLoadAuthor 批量加载Author字段
+	AnswersLoadAuthor(ctx context.Context, answers *[]*Answer) error
 }
 
 // Question 代表问题

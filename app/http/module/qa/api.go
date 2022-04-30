@@ -23,6 +23,15 @@ func RegisterRoutes(r *gin.Engine) error {
 		questionApi.POST("/delete", api.QuestionDelete)
 		// 更新问题
 		questionApi.POST("/edit", api.QuestionEdit)
+		// 问题详情
+		questionApi.POST("/detail", api.QuestionDetail)
+	}
+	answerApi := r.Group("/answer", auth.AuthMiddleware())
+	{
+		// 创建回答
+		answerApi.POST("/create", api.AnswerCreate)
+		// 删除回答
+		answerApi.POST("/delete", api.AnswerDelete)
 	}
 
 	return nil

@@ -15,12 +15,79 @@ type QaService struct {
 	logger    contract.Log        // log
 }
 
+func (q *QaService) AnswersLoadAuthor(ctx context.Context, answers *[]*Answer) error {
+	if answers == nil {
+		return nil
+	}
+	ids := make([]int64, 0)
+	for _, answer := range *answers {
+		ids = append(ids, answer.ID)
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	if err := q.ormDB.WithContext(ctx).Preload("Author").Find(answers, ids).Error; err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func (q *QaService) QuestionLoadAnswers(ctx context.Context, question *Question) error {
+	if err := q.ormDB.WithContext(ctx).Preload("Answers", func(db *gorm.DB) *gorm.DB {
+		return db.Order("answers.created_at desc")
+	}).First(question).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (q *QaService) QuestionLoadAuthor(ctx context.Context, question *Question) error {
+	if err := q.ormDB.WithContext(ctx).Preload("Author").First(question).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (q *QaService) DeleteAnswer(ctx context.Context, answerID int64) error {
+	answerDB := &Answer{ID: answerID}
+	if err := q.ormDB.WithContext(ctx).Delete(answerDB).Error; err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func (q *QaService) GetAnswer(ctx context.Context, answerId int64) (*Answer, error) {
+	answer := &Answer{}
+	if err := q.ormDB.WithContext(ctx).First(answer, answerId).Error; err != nil {
+		return nil, err
+	}
+	return answer, nil
+}
+
+func (q *QaService) PostAnswer(ctx context.Context, answer *Answer) error {
+	if answer.QuestionID == 0 {
+		return errors.New("问题不存在")
+	}
+	question := &Question{ID: answer.QuestionID}
+	if err := q.ormDB.WithContext(ctx).First(question).Error; err != nil {
+		return err
+	}
+	if err := q.ormDB.WithContext(ctx).Create(answer).Error; err != nil {
+		return err
+	}
+	question.AnswerNum = question.AnswerNum + 1
+	if err := q.ormDB.WithContext(ctx).Save(question).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (q *QaService) UpdateQuestion(ctx context.Context, question *Question) error {
 	questionDB := &Question{ID: question.ID}
 	if err := q.ormDB.WithContext(ctx).First(questionDB).Error; err != nil {
 		return errors.WithStack(err)
 	}
-	
+
 	if question.Title != "" {
 		questionDB.Title = question.Title
 	}

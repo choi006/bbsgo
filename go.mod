@@ -3,6 +3,7 @@ module github.com/choi006/bbsgo
 go 1.15
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/gohade/hade v1.0.3-0.20220329021201-46bf8c9cfafa
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/pkg/errors v0.9.1
