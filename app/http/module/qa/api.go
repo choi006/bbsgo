@@ -25,6 +25,8 @@ func RegisterRoutes(r *gin.Engine) error {
 		questionApi.POST("/edit", api.QuestionEdit)
 		// 问题详情
 		questionApi.POST("/detail", api.QuestionDetail)
+		// 问题列表
+		questionApi.POST("/list", api.QuestionList)
 	}
 	answerApi := r.Group("/answer", auth.AuthMiddleware())
 	{

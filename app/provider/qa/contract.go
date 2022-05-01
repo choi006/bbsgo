@@ -10,6 +10,8 @@ import (
 const QaKey = "qa"
 
 type Service interface {
+	// GetQuestions 获取问题列表，question简化结构
+	GetQuestions(ctx context.Context, paper *Pager) ([]*Question, error)
 	// GetQuestion 获取某个问题详情，question简化结构
 	GetQuestion(ctx context.Context, questionID int64) (*Question, error)
 	// PostQuestion 上传某个问题
@@ -25,6 +27,8 @@ type Service interface {
 	QuestionLoadAuthor(ctx context.Context, question *Question) error
 	// QuestionLoadAnswers 单个问题加载Answers
 	QuestionLoadAnswers(ctx context.Context, question *Question) error
+	// QuestionsLoadAuthor 批量加载Author字段
+	QuestionsLoadAuthor(ctx context.Context, questions *[]*Question) error
 
 	// PostAnswer 上传某个回答
 	// ctx必须带操作人信息
@@ -63,4 +67,11 @@ type Answer struct {
 	DeletedAt  gorm.DeletedAt `gorm:"index"`
 	Author     *user.User     `gorm:"foreignKey:AuthorID"`
 	Question   *Question      `gorm:"foreignKey:QuestionID"`
+}
+
+// Pager 代表分页机制
+type Pager struct {
+	Total int64 // 共有多少数据，只有返回值使用
+	Start int   // 起始位置
+	Size  int   // 每个页面个数
 }

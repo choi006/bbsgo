@@ -82,3 +82,14 @@ func getShortContext(context string) string {
 	}
 	return text
 }
+
+func ConvertQuestionsToDTO(questions []*qa.Question) []*QuestionDTO {
+	if questions == nil {
+		return nil
+	}
+	ret := make([]*QuestionDTO, 0, len(questions))
+	for _, v := range questions {
+		ret = append(ret, ConvertQuestionToDTO(v, map[string]string{"is_short_context": "true"}))
+	}
+	return ret
+}

@@ -7,6 +7,44 @@ definitions:
       name:
         type: string
     type: object
+  qa.AnswerDTO:
+    properties:
+      author:
+        $ref: '#/definitions/user.UserDTO'
+        description: 作者
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  qa.QuestionDTO:
+    properties:
+      answer_num:
+        type: integer
+      answers:
+        description: 回答
+        items:
+          $ref: '#/definitions/qa.AnswerDTO'
+        type: array
+      author:
+        $ref: '#/definitions/user.UserDTO'
+        description: 作者
+      context:
+        description: 在列表页，只显示前200个字符
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
   qa.answerCreateParam:
     properties:
       context:
@@ -53,6 +91,24 @@ definitions:
     - content
     - id
     - title
+    type: object
+  qa.questionListParam:
+    properties:
+      size:
+        type: integer
+      start:
+        type: integer
+    required:
+    - size
+    type: object
+  user.UserDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      user_name:
+        type: string
     type: object
   user.ValidateCodeGetParam:
     properties:
@@ -164,21 +220,6 @@ paths:
       summary: 获取所有用户
       tags:
       - demo
-  /demo/demo2:
-    get:
-      description: 获取所有学生,不进行分页
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/demo.UserDTO'
-            type: array
-      summary: 获取所有学生
-      tags:
-      - demo
   /question/create:
     post:
       consumes:
@@ -272,6 +313,32 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 编辑问题
+      tags:
+      - qa
+  /question/list:
+    post:
+      consumes:
+      - application/json
+      description: 获取问题列表，包含作者信息，不包含回答
+      parameters:
+      - description: 获取问题列表参数
+        in: body
+        name: questionListParam
+        required: true
+        schema:
+          $ref: '#/definitions/qa.questionListParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 问题列表
+          schema:
+            items:
+              $ref: '#/definitions/qa.QuestionDTO'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 获取问题列表
       tags:
       - qa
   /user/login:

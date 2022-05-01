@@ -135,29 +135,6 @@ var doc = `{
                 }
             }
         },
-        "/demo/demo2": {
-            "get": {
-                "description": "获取所有学生,不进行分页",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "demo"
-                ],
-                "summary": "获取所有学生",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/demo.UserDTO"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/question/create": {
             "post": {
                 "security": [
@@ -312,6 +289,48 @@ var doc = `{
                 }
             }
         },
+        "/question/list": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取问题列表，包含作者信息，不包含回答",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "qa"
+                ],
+                "summary": "获取问题列表",
+                "parameters": [
+                    {
+                        "description": "获取问题列表参数",
+                        "name": "questionListParam",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/qa.questionListParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "问题列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/qa.QuestionDTO"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
                 "description": "用户登录接口",
@@ -455,6 +474,62 @@ var doc = `{
                 }
             }
         },
+        "qa.AnswerDTO": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "description": "作者",
+                    "$ref": "#/definitions/user.UserDTO"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "qa.QuestionDTO": {
+            "type": "object",
+            "properties": {
+                "answer_num": {
+                    "type": "integer"
+                },
+                "answers": {
+                    "description": "回答",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/qa.AnswerDTO"
+                    }
+                },
+                "author": {
+                    "description": "作者",
+                    "$ref": "#/definitions/user.UserDTO"
+                },
+                "context": {
+                    "description": "在列表页，只显示前200个字符",
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "qa.answerCreateParam": {
             "type": "object",
             "required": [
@@ -522,6 +597,34 @@ var doc = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "qa.questionListParam": {
+            "type": "object",
+            "required": [
+                "size"
+            ],
+            "properties": {
+                "size": {
+                    "type": "integer"
+                },
+                "start": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.UserDTO": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "user_name": {
                     "type": "string"
                 }
             }

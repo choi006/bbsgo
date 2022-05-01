@@ -15,6 +15,28 @@ type QaService struct {
 	logger    contract.Log        // log
 }
 
+func (q *QaService) QuestionsLoadAuthor(ctx context.Context, questions *[]*Question) error {
+	if err := q.ormDB.WithContext(ctx).Preload("Author").Find(questions).Error; err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+func (q *QaService) GetQuestions(ctx context.Context, paper *Pager) ([]*Question, error) {
+	questions := make([]*Question, 0, paper.Size)
+	total := int64(0)
+	if err := q.ormDB.WithContext(ctx).Model(&Question{}).Count(&total).Error; err != nil {
+		paper.Total = total
+	}
+	if err := q.ormDB.WithContext(ctx).Order("created_at desc").Offset(paper.Start).Limit(paper.Size).Find(&questions).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []*Question{}, nil
+		}
+		return nil, err
+	}
+	return questions, nil
+}
+
 func (q *QaService) AnswersLoadAuthor(ctx context.Context, answers *[]*Answer) error {
 	if answers == nil {
 		return nil
