@@ -70,10 +70,27 @@ func (q *QaService) QuestionLoadAuthor(ctx context.Context, question *Question) 
 	return nil
 }
 
-func (q *QaService) DeleteAnswer(ctx context.Context, answerID int64) error {
-	answerDB := &Answer{ID: answerID}
-	if err := q.ormDB.WithContext(ctx).Delete(answerDB).Error; err != nil {
-		return errors.WithStack(err)
+func (q *QaService) DeleteAnswer(ctx context.Context, answer *Answer) error {
+	err := q.ormDB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 删除回答
+		answerDB := &Answer{ID: answer.ID}
+		if err := tx.Delete(answerDB).Error; err != nil {
+			return errors.WithStack(err)
+		}
+		// 获取问题
+		question := &Question{ID: answer.QuestionID}
+		if err := tx.First(question).Error; err != nil {
+			return err
+		}
+		// 问题回答数量-1
+		question.AnswerNum = question.AnswerNum - 1
+		if err := tx.Save(question).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 	return nil
 }

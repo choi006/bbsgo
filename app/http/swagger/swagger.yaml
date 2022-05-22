@@ -183,7 +183,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 创建回答
+      description: 删除回答
       parameters:
       - description: 删除id
         in: body
@@ -200,7 +200,7 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
-      summary: 创建回答
+      summary: 删除回答
       tags:
       - qa
   /demo/demo:

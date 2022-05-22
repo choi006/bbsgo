@@ -11,8 +11,8 @@ type answerDeleteParam struct {
 }
 
 // AnswerDelete 代表删除回答
-// @Summary 创建回答
-// @Description 创建回答
+// @Summary 删除回答
+// @Description 删除回答
 // @Accept  json
 // @Produce  json
 // @Tags qa
@@ -45,7 +45,7 @@ func (api *QaApi) AnswerDelete(c *gin.Context) {
 		return
 	}
 
-	if err := qaService.DeleteAnswer(c, answer.ID); err != nil {
+	if err := qaService.DeleteAnswer(c, answer); err != nil {
 		c.ISetStatus(500).IText(err.Error())
 		return
 	}

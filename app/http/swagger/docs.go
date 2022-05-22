@@ -77,7 +77,7 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "创建回答",
+                "description": "删除回答",
                 "consumes": [
                     "application/json"
                 ],
@@ -87,7 +87,7 @@ var doc = `{
                 "tags": [
                     "qa"
                 ],
-                "summary": "创建回答",
+                "summary": "删除回答",
                 "parameters": [
                     {
                         "description": "删除id",
