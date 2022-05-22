@@ -48,7 +48,7 @@ func (q *QaService) AnswersLoadAuthor(ctx context.Context, answers *[]*Answer) e
 	if len(ids) == 0 {
 		return nil
 	}
-	if err := q.ormDB.WithContext(ctx).Preload("Author").Find(answers, ids).Error; err != nil {
+	if err := q.ormDB.WithContext(ctx).Preload("Author").Order("created_at desc").Find(answers, ids).Error; err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
