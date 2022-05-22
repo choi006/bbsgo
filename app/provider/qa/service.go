@@ -90,15 +90,25 @@ func (q *QaService) PostAnswer(ctx context.Context, answer *Answer) error {
 	if answer.QuestionID == 0 {
 		return errors.New("问题不存在")
 	}
-	question := &Question{ID: answer.QuestionID}
-	if err := q.ormDB.WithContext(ctx).First(question).Error; err != nil {
-		return err
-	}
-	if err := q.ormDB.WithContext(ctx).Create(answer).Error; err != nil {
-		return err
-	}
-	question.AnswerNum = question.AnswerNum + 1
-	if err := q.ormDB.WithContext(ctx).Save(question).Error; err != nil {
+	// 必须使用事务
+	err := q.ormDB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		question := &Question{ID: answer.QuestionID}
+		// 获取问题
+		if err := tx.First(question).Error; err != nil {
+			return err
+		}
+		// 增加回答
+		if err := tx.Create(answer).Error; err != nil {
+			return err
+		}
+		// 问题回答数量+1
+		question.AnswerNum = question.AnswerNum + 1
+		if err := tx.Save(question).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
 		return err
 	}
 	return nil
